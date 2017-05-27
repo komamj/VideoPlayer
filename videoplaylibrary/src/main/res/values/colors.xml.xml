@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="current_time_color">#FF24A3F5</color>
+    <color name="total_time_color">#99FFFFFF</color>
+</resources>

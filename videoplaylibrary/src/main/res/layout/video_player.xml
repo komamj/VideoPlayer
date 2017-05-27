@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.koma.video.videoplaylibrary.KomaVideoView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <com.koma.video.videoplaylibrary.KomaMediaController
+        android:id="@+id/media_controller"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.koma.video.videoplaylibrary.KomaVerticalSlideView
+        android:id="@+id/slide_bright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center"
+        android:visibility="gone" />
+
+
+    <com.koma.video.videoplaylibrary.KomaVerticalSlideView
+        android:id="@+id/slide_volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableTop="@drawable/ic_fast_forward"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="15dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_retreat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableTop="@drawable/ic_fast_rewind"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="15dp"
+        android:visibility="gone" />
+</merge>

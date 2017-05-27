@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">VideoPlay Library</string>
+    <string name="can_not_play_this_file">Can not play this file</string>
+</resources>

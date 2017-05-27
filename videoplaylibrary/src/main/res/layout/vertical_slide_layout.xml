@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/iv_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="21dp" />
+
+    <FrameLayout
+        android:id="@+id/iv_full"
+        android:layout_width="3dp"
+        android:layout_height="113dp"
+        android:layout_gravity="center_horizontal">
+
+        <View
+            android:id="@+id/iv_percent"
+            android:layout_width="3dp"
+            android:layout_height="113dp"
+            android:layout_gravity="bottom"
+            android:baselineAlignBottom="true"
+            android:scaleType="matrix" />
+    </FrameLayout>
+
+</merge>
