@@ -2,13 +2,11 @@ package com.koma.video.data;
 
 import com.koma.video.data.model.Video;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 
 
 public interface VideoDataSource {
-    Observable<ArrayList<String>> getDetails(String data);
-
-    Observable<ArrayList<Video>> getAllVideos();
+    Flowable<List<Video>> getAllVideos();
 }

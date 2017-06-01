@@ -2,14 +2,20 @@ package com.koma.video.video;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.koma.video.R;
 import com.koma.video.base.BaseFragment;
+import com.koma.video.data.VideoRepository;
 import com.koma.video.data.model.Video;
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * Created by koma on 5/27/17.
@@ -20,11 +26,36 @@ public class VideosFragment extends BaseFragment implements VideosConstract.View
     @NonNull
     private VideosConstract.Presenter mPresenter;
 
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
+    private VideosAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        new VideosPresenter(this, VideoRepository.getInstance());
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         KomaLogUtils.i(TAG, "onViewCreated");
+
+        initViews();
+    }
+
+    private void initViews() {
+        mAdapter = new VideosAdapter(mContext, new ArrayList<Video>());
+
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.VERTICAL);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setHasFixedSize(true);
     }
 
     @Override
@@ -66,7 +97,10 @@ public class VideosFragment extends BaseFragment implements VideosConstract.View
 
     @Override
     public void showVideos(List<Video> videoList) {
-
+        KomaLogUtils.i(TAG, "showVideos size : " + videoList.size());
+        if (mAdapter != null) {
+            mAdapter.replaceData(videoList);
+        }
     }
 
     @Override
@@ -76,6 +110,6 @@ public class VideosFragment extends BaseFragment implements VideosConstract.View
 
     @Override
     public boolean isActive() {
-        return false;
+        return this.isAdded();
     }
 }

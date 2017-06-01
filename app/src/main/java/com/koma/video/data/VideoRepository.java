@@ -2,14 +2,12 @@ package com.koma.video.data;
 
 import com.koma.video.data.model.Video;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 
 
 public class VideoRepository implements VideoDataSource {
-    private static final String TAG = VideoRepository.class.getSimpleName();
-
     private static VideoRepository mRepostory;
 
     private LocalDataSource mLocalDataSource;
@@ -28,14 +26,8 @@ public class VideoRepository implements VideoDataSource {
         }
         return mRepostory;
     }
-
     @Override
-    public Observable<ArrayList<String>> getDetails(String data) {
-        return mLocalDataSource.getDetails(data);
-    }
-
-    @Override
-    public Observable<ArrayList<Video>> getAllVideos() {
+    public Flowable<List<Video>> getAllVideos() {
         return mLocalDataSource.getAllVideos();
     }
 }

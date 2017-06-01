@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by koma on 5/27/17.
  */
@@ -20,21 +22,29 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         setContentView(getLayoutId());
 
+        ButterKnife.bind(this);
+
         if (!needRequestStoragePermission()) {
             //// TODO: 5/27/17
+            init();
         }
+    }
+
+    private void init() {
+
     }
 
     public abstract int getLayoutId();
 
     private boolean needRequestStoragePermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return false;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return false;
+        }
 
         boolean needRequest = false;
         String[] permissions = {
-               /* Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,*/
-                Manifest.permission_group.STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.INTERNET
         };
         ArrayList<String> permissionList = new ArrayList<String>();
@@ -66,6 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             case PERMISSION_REQUEST_CODE: {
                 if (checkPermissionGrantResults(grantResults)) {
                     //// TODO: 4/8/17
+                    init();
                 } else {
                     finish();
                 }
