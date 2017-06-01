@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
+    app:cardElevation="6dp"
     app:cardUseCompatPadding="true">
 
     <com.koma.video.widget.VideoImageView
         android:id="@+id/iv_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:foreground="?selectableItemBackgroundBorderless" />
 
     <TextView
         android:id="@+id/tv_title"

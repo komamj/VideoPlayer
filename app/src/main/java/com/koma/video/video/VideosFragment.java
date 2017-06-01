@@ -2,8 +2,8 @@ package com.koma.video.video;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.koma.video.R;
@@ -50,12 +50,12 @@ public class VideosFragment extends BaseFragment implements VideosConstract.View
     private void initViews() {
         mAdapter = new VideosAdapter(mContext, new ArrayList<Video>());
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,
-                StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
+        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @Override

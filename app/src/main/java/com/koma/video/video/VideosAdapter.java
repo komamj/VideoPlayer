@@ -1,6 +1,7 @@
 package com.koma.video.video;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.koma.video.R;
 import com.koma.video.data.model.Video;
-import com.koma.video.videoplaylibrary.util.KomaLogUtils;
+import com.koma.video.util.Utils;
 
 import java.io.File;
 import java.util.List;
@@ -60,7 +61,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
     }
 
     @Override
-    public void onBindViewHolder(VideoViewHolder holder, int position) {
+    public void onBindViewHolder(final VideoViewHolder holder, int position) {
+        holder.itemView.setTag(position);
         Glide.with(mContext).load(Uri.fromFile(new File(mData.get(position).getPath())))
                 .apply(mRequestOptions)
                 .into(holder.mVideoImage);
@@ -72,7 +74,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
         return mData == null ? 0 : mData.size();
     }
 
-    class VideoViewHolder extends RecyclerView.ViewHolder {
+    class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.iv_video)
         ImageView mVideoImage;
         @BindView(R.id.tv_title)
@@ -82,6 +84,17 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
             super(view);
 
             ButterKnife.bind(this, view);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            String type = "video/*";
+            intent.setDataAndType(Utils.getVideoUri(mData.get(position).getId()), type);
+            mContext.startActivity(intent);
         }
     }
 }
