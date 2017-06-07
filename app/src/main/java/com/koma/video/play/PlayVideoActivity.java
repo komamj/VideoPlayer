@@ -42,33 +42,33 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
         super.onCreate(savedInstanceState);
 
         KomaLogUtils.i(TAG, "onCreate");
-
-        init();
     }
 
-    private void init() {
+    private void initViews() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mToolbar.setNavigationOnClickListener(this);
-        mLockButton = (ImageButton) findViewById(R.id.ib_lock);
         mGestureControllerView = (KomaGestureController) findViewById(R.id.gesture_controller);
         mVideoView = (KomaVideoView) findViewById(R.id.player_view);
+        mLockButton = (ImageButton) findViewById(R.id.ib_lock);
+        mController = (KomaMediaController) findViewById(R.id.media_controller);
+        mController.hide();
+    }
+
+    public void init() {
+        initViews();
+
+        mToolbar.setNavigationOnClickListener(this);
+
         mVideoView.setOnCompletionListener(this);
         mVideoView.setPauseListener(this);
-        mController = (KomaMediaController) findViewById(R.id.media_controller);
+
         mController.setClickListeners(this);
-        mController.hide();
+
         mVideoView.setMediaController(mController);
         mLockButton.setOnClickListener(this);
 
@@ -112,15 +112,9 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
         if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             /** 从其他应用发出的intent*/
             mContentUri = intent.getData();
-            if (mContentUri == null) {
-                mContentUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sample);
-            }
             mVideoTitle = Utils.getFileNameFromUri(this, mContentUri);
         }
-        if (mContentUri == null) {
-            mContentUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sample);
-            mVideoTitle = Utils.getFileNameFromUri(this, mContentUri);
-        }
+
         KomaLogUtils.i(TAG, "mVideoTitle : " + mVideoTitle + "uri : " + mContentUri);
     }
 
@@ -130,13 +124,18 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
 
         KomaLogUtils.i(TAG, "onStart");
 
+        View decorView = getWindow().getDecorView();
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         //监听耳机拔出事件
         IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         registerReceiver(mHeadsetReceiver, intentFilter);
 
         initPlayer();
-
-        initBrightness();
     }
 
     private void initPlayer() {
@@ -148,28 +147,6 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
             mVideoView.start();
         }
         mVideoView.requestFocus();
-    }
-
-    private void initBrightness() {
-       /* mIsAutoBrightness = BrightnessManager.isAutoBrightness(this);
-        if (mIsAutoBrightness) {
-            BrightnessManager.setBrightnessMode(this, false);
-            if (mFromCamera) {
-                if (BrightnessManager.getBrightness(this) < BrightnessManager.BRIGHTNESS_MANUAL_CAMAERA) {
-                    BrightnessManager.setBrightness(this, BrightnessManager.BRIGHTNESS_MANUAL_CAMAERA);
-                }
-            }
-        }
-        mSystemBrightness = BrightnessManager.getBrightness(this);
-        if (!mFromCamera) {
-            if (mSystemBrightness + BrightnessManager.BRIGHTNESS_MANUAL_INCREASE >=
-                    BrightnessManager.BRIGHTNESS_MANUAL_MAX) {
-                BrightnessManager.setBrightness(this, BrightnessManager.BRIGHTNESS_MANUAL_MAX);
-            } else {
-                BrightnessManager.setBrightness(this, mSystemBrightness +
-                        BrightnessManager.BRIGHTNESS_MANUAL_INCREASE);
-            }
-        }*/
     }
 
     @Override
@@ -223,17 +200,9 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
             mVideoView.stopPlayback();
         }
 
-        resetBrightness();
-
         unregisterReceiver(mHeadsetReceiver);
     }
 
-    private void resetBrightness() {
-        /*if (mIsAutoBrightness) {
-            BrightnessManager.setBrightnessMode(this, true);
-        }
-        BrightnessManager.setBrightness(this, mSystemBrightness);*/
-    }
 
     private BroadcastReceiver mHeadsetReceiver = new BroadcastReceiver() {
 
@@ -311,7 +280,6 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
     }
-
 
     @Override
     public void onCompletion(MediaPlayer mp) {

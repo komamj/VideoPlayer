@@ -615,6 +615,9 @@ public class KomaVideoView extends SurfaceView implements KomaMediaController.Me
                 mMediaPlayer.start();
                 mCurrentState = STATE_PLAYING;
             }
+            if (mMediaController != null) {
+                mMediaController.updatePausePlay();
+            }
         }
         mTargetState = STATE_PLAYING;
     }

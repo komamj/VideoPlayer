@@ -20,12 +20,10 @@ public class MainActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        init();
+        setSupportActionBar(mToolbar);
     }
 
-    private void init() {
-        setSupportActionBar(mToolbar);
-
+    public void init() {
         VideosFragment videosFragment = (VideosFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.content_main);
 

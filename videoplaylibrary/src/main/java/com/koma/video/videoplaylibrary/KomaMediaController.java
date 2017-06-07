@@ -229,7 +229,7 @@ public class KomaMediaController extends FrameLayout implements SeekBar.OnSeekBa
         @Override
         public void run() {
             KomaLogUtils.i(TAG, "fade out mShowing : " + mShowing);
-            if (mShowing) {
+            if (mShowing||mLockShowing) {
                 hide();
             }
         }
