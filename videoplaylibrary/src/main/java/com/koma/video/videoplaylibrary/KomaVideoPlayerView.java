@@ -22,8 +22,8 @@ import com.koma.video.videoplaylibrary.util.Utils;
  * Created by koma on 5/23/17.
  */
 
-public class KomaGestureController extends FrameLayout {
-    private static final String TAG = KomaGestureController.class.getSimpleName();
+public class KomaVideoPlayerView extends FrameLayout {
+    private static final String TAG = KomaVideoPlayerView.class.getSimpleName();
     /**
      * 调节音量亮度进度条的修正比例，如此不需要手势划满屏幕高度即可完整调节进度条
      */
@@ -60,21 +60,21 @@ public class KomaGestureController extends FrameLayout {
 
     private boolean isVolumeSliding = false;
 
-    public KomaGestureController(Context context) {
+    public KomaVideoPlayerView(Context context) {
         super(context);
 
         mContext = context;
     }
 
-    public KomaGestureController(Context context, AttributeSet attrs) {
+    public KomaVideoPlayerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public KomaGestureController(Context context, AttributeSet attrs, int defStyleAttr) {
+    public KomaVideoPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public KomaGestureController(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public KomaVideoPlayerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         mContext = context;

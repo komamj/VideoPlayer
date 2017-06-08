@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 
 import com.koma.video.R;
 import com.koma.video.base.BaseActivity;
-import com.koma.video.videoplaylibrary.KomaGestureController;
+import com.koma.video.videoplaylibrary.KomaVideoPlayerView;
 import com.koma.video.videoplaylibrary.KomaMediaController;
 import com.koma.video.videoplaylibrary.KomaVideoView;
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
@@ -38,7 +38,7 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
     private Toolbar mToolbar;
     private boolean mIsLock, mPauseState;
     private ImageButton mLockButton;
-    private KomaGestureController mGestureControllerView;
+    private KomaVideoPlayerView mGestureControllerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mGestureControllerView = (KomaGestureController) findViewById(R.id.gesture_controller);
+        mGestureControllerView = (KomaVideoPlayerView) findViewById(R.id.gesture_controller);
         mVideoView = (KomaVideoView) findViewById(R.id.player_view);
         mLockButton = (ImageButton) findViewById(R.id.ib_lock);
         mController = (KomaMediaController) findViewById(R.id.media_controller);
