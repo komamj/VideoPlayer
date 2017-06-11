@@ -1,5 +1,6 @@
 package com.koma.video.videoplaylibrary;
 
+import android.content.Context;
 import android.view.GestureDetector;
 
 /**
@@ -8,10 +9,15 @@ import android.view.GestureDetector;
 
 public interface KomaVideoControllerContract {
     interface View extends BaseView<Presenter> {
+        Context getContext();
+
         void showSystemUI(boolean forceShow);
+
+        void updateLockButton(boolean isLocked);
     }
 
     interface Presenter extends BasePresenter {
         GestureDetector.SimpleOnGestureListener getGestureListener();
+
     }
 }

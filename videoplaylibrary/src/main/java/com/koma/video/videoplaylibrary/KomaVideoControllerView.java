@@ -4,11 +4,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.Toolbar;
 
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by koma on 6/8/17.
@@ -16,7 +22,8 @@ import com.koma.video.videoplaylibrary.util.KomaLogUtils;
 
 public class KomaVideoControllerView extends FrameLayout implements KomaVideoControllerContract.View {
     private static final String TAG = KomaVideoControllerView.class.getSimpleName();
-
+    @BindView(R2.id.ib_lock)
+    ImageButton mLockButton;
     private KomaVideoControllerContract.Presenter mPresenter;
     private GestureDetector mGestureDetector;
 
@@ -48,6 +55,10 @@ public class KomaVideoControllerView extends FrameLayout implements KomaVideoCon
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
+
+        LayoutInflater.from(getContext()).inflate(R.layout.media_controller, this);
+
+        ButterKnife.bind(this, this);
     }
 
     @Override
@@ -81,6 +92,11 @@ public class KomaVideoControllerView extends FrameLayout implements KomaVideoCon
             flags |= (SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
         setSystemUiVisibility(flags);
+    }
+
+    @Override
+    public void updateLockButton(boolean isLocked) {
+
     }
 
     @Override
