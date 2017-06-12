@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Toolbar;
+import android.widget.TextView;
 
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
 
@@ -24,6 +24,14 @@ public class KomaVideoControllerView extends FrameLayout implements KomaVideoCon
     private static final String TAG = KomaVideoControllerView.class.getSimpleName();
     @BindView(R2.id.ib_lock)
     ImageButton mLockButton;
+    @BindView(R2.id.tv_volume)
+    TextView mVolumeView;
+    @BindView(R2.id.tv_brightness)
+    TextView mBrightnessView;
+    @BindView(R2.id.tv_progress)
+    TextView mProgressView;
+    @BindView(R2.id.video_view)
+    KomaVideoView mVideoView;
     private KomaVideoControllerContract.Presenter mPresenter;
     private GestureDetector mGestureDetector;
 
@@ -56,9 +64,15 @@ public class KomaVideoControllerView extends FrameLayout implements KomaVideoCon
     public void onFinishInflate() {
         super.onFinishInflate();
 
-        LayoutInflater.from(getContext()).inflate(R.layout.media_controller, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.video_player_layout, this);
 
         ButterKnife.bind(this, this);
+
+        init();
+    }
+
+    private void init() {
+        mVideoView.addCallback(mPresenter.getCallback());
     }
 
     @Override
@@ -96,6 +110,11 @@ public class KomaVideoControllerView extends FrameLayout implements KomaVideoCon
 
     @Override
     public void updateLockButton(boolean isLocked) {
+
+    }
+
+    @Override
+    public void setVideoSize(int videoWidth, int videoHeight) {
 
     }
 

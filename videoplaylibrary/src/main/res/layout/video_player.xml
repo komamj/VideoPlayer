@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.koma.video.videoplaylibrary.KomaVideoView
+    <com.koma.video.videoplaylibrary.KomaVideoView1
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

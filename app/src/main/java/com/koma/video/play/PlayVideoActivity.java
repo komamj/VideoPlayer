@@ -18,15 +18,15 @@ import com.koma.video.R;
 import com.koma.video.base.BaseActivity;
 import com.koma.video.videoplaylibrary.KomaVideoPlayerView;
 import com.koma.video.videoplaylibrary.KomaMediaController;
-import com.koma.video.videoplaylibrary.KomaVideoView;
+import com.koma.video.videoplaylibrary.KomaVideoView1;
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
 import com.koma.video.videoplaylibrary.util.Utils;
 
 public class PlayVideoActivity extends BaseActivity implements View.OnClickListener,
-        MediaPlayer.OnCompletionListener, KomaVideoView.PauseListener {
+        MediaPlayer.OnCompletionListener, KomaVideoView1.PauseListener {
     private static final String TAG = PlayVideoActivity.class.getSimpleName();
 
-    private KomaVideoView mVideoView;
+    private KomaVideoView1 mVideoView;
     private KomaMediaController mController;
 
     private int mPlayTime;
@@ -53,7 +53,7 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mGestureControllerView = (KomaVideoPlayerView) findViewById(R.id.gesture_controller);
-        mVideoView = (KomaVideoView) findViewById(R.id.player_view);
+        mVideoView = (KomaVideoView1) findViewById(R.id.player_view);
         mLockButton = (ImageButton) findViewById(R.id.ib_lock);
         mController = (KomaMediaController) findViewById(R.id.media_controller);
         mController.hide();

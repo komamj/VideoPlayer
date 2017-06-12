@@ -37,7 +37,7 @@ public class KomaVideoPlayerView extends FrameLayout {
 
     private GestureDetector mGestureDetector;
     private KomaMediaController mController;
-    private KomaVideoView mPlayerView;
+    private KomaVideoView1 mPlayerView;
     private KomaVerticalSlideView mSlideBrightView, mSlideVolumeView;
     private TextView mSpeedView, mRetreatView;
     private boolean isProgressing = false;
@@ -98,7 +98,7 @@ public class KomaVideoPlayerView extends FrameLayout {
 
     private void initViews() {
         mController = (KomaMediaController) findViewById(com.koma.video.videoplaylibrary.R.id.media_controller);
-        mPlayerView = (KomaVideoView) findViewById(com.koma.video.videoplaylibrary.R.id.player_view);
+        mPlayerView = (KomaVideoView1) findViewById(com.koma.video.videoplaylibrary.R.id.player_view);
         mSlideBrightView = (KomaVerticalSlideView) findViewById(com.koma.video.videoplaylibrary.R.id.slide_bright);
         mSlideBrightView.setIndicatorImage(com.koma.video.videoplaylibrary.R.drawable.ic_brightness_up);
         mSlideVolumeView = (KomaVerticalSlideView) findViewById(com.koma.video.videoplaylibrary.R.id.slide_volume);

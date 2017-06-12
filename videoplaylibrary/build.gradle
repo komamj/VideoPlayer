@@ -30,6 +30,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     testCompile 'junit:junit:4.12'
 
+    compile "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
+
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknife"
 }
