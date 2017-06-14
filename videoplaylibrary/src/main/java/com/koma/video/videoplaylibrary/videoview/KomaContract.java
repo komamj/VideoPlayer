@@ -1,34 +1,36 @@
-package com.koma.video.videoplaylibrary;
+package com.koma.video.videoplaylibrary.videoview;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.view.GestureDetector;
 import android.view.SurfaceHolder;
 
+import com.koma.video.videoplaylibrary.BasePresenter;
+import com.koma.video.videoplaylibrary.BaseView;
+
 /**
- * Created by koma on 6/8/17.
+ * Created by koma on 6/13/17.
  */
 
-public interface KomaVideoControllerContract {
+public interface KomaContract {
     interface View extends BaseView<Presenter> {
         Context getContext();
 
-        void addCallback(SurfaceHolder.Callback callback);
+        SurfaceHolder getSurfaceHolder();
 
-        void showSystemUI(boolean forceShow);
+        void onPrepared(MediaPlayer mp);
 
-        void updateLockButton();
-
-        void updatePausePlay();
-
-        void setVideoSize(int videoWidth, int videoHeight);
+        void onVideoSizeChanged(MediaPlayer mp, int width, int height);
 
         /**
          * Show the controller on screen. It will go away
          * automatically after 3 seconds of inactivity.
          */
         void show();
+
+        void hide();
+
+        boolean isShowing();
 
         /**
          * Show the controller on screen. It will go away
@@ -41,11 +43,18 @@ public interface KomaVideoControllerContract {
     }
 
     interface Presenter extends BasePresenter {
-        GestureDetector.SimpleOnGestureListener getGestureListener();
+        boolean isTargetPlaying();
+
+        int getSeekWhenPrepared();
+
+        void openVideo();
 
         void stopPlayback();
 
-        SurfaceHolder.Callback getCallback();
+        /*
+         * release the media player in any state
+         */
+        void release(boolean clearTargetState);
 
         /**
          * Sets video path.

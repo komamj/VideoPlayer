@@ -4,16 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.koma.video.videoplaylibrary.KomaVideoView
+    <com.koma.video.videoplaylibrary.videoview.KomaVideoView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" />
-
-    <com.koma.video.videoplaylibrary.KomaMediaController
-        android:id="@+id/media_controller"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
@@ -29,6 +24,7 @@
             android:drawablePadding="@dimen/indicator_margin"
             android:drawableTop="@drawable/ic_brightness_up"
             android:maxLines="1"
+            android:visibility="gone"
             android:text="50%"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white" />
@@ -48,6 +44,7 @@
             android:drawablePadding="@dimen/indicator_margin"
             android:drawableTop="@drawable/ic_volume_up"
             android:maxLines="1"
+            android:visibility="gone"
             android:text="50%"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white" />
@@ -67,30 +64,86 @@
             android:drawablePadding="@dimen/indicator_margin"
             android:drawableTop="@drawable/ic_fast_forward"
             android:maxLines="1"
-            android:text="50%"
+            android:text="00:00/10:00"
+            android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white" />
     </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/tv_speed"
+    <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableTop="@drawable/ic_fast_forward"
-        android:fontFamily="sans-serif"
-        android:gravity="center"
-        android:padding="15dp"
-        android:visibility="gone" />
+        android:layout_gravity="start|center"
+        app:cardBackgroundColor="@android:color/black"
+        app:cardCornerRadius="8dp">
 
-    <TextView
-        android:id="@+id/tv_retreat"
-        android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/ib_lock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:src="@drawable/ic_lock_off"
+            android:visibility="gone" />
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/media_controller"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawableTop="@drawable/ic_fast_rewind"
-        android:fontFamily="sans-serif"
-        android:gravity="center"
-        android:padding="15dp"
-        android:visibility="gone" />
+        android:layout_gravity="bottom"
+        android:paddingBottom="4dp"
+        android:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/ib_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_pause" />
+
+        <TextView
+            android:id="@+id/tv_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/ib_pause"
+            android:maxLines="1"
+            android:text="00:00"
+            android:textColor="@android:color/white" />
+
+        <SeekBar
+            android:id="@+id/sb_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tv_current_time"
+            android:layout_toStartOf="@id/tv_end_time"
+            android:max="1000" />
+
+        <TextView
+            android:id="@+id/tv_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:maxLines="1"
+            android:text="10:00"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:minHeight="?android:attr/actionBarSize"
+        android:paddingTop="25dp"
+        android:visibility="gone"
+        app:navigationIcon="@drawable/ic_back"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 </merge>

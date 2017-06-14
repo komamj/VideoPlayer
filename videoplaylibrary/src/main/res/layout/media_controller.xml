@@ -89,7 +89,6 @@
         android:layout_height="wrap_content"
         android:elevation="0dp"
         android:visibility="gone"
-        android:paddingTop="25dp"
         app:navigationIcon="@drawable/ic_back"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 

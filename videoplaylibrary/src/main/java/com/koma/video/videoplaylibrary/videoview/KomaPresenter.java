@@ -1,31 +1,30 @@
-package com.koma.video.videoplaylibrary;
+package com.koma.video.videoplaylibrary.videoview;
+
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.SurfaceHolder;
+import android.view.GestureDetector;
+import android.view.ViewConfiguration;
 
 import com.koma.video.videoplaylibrary.util.KomaLogUtils;
 
 import java.io.IOException;
 
 /**
- * Created by koma on 6/8/17.
+ * Created by koma on 6/13/17.
  */
 
-public class KomaVideoControllerPresenter extends SimpleOnGestureListener implements
-        KomaVideoControllerContract.Presenter, AudioManager.OnAudioFocusChangeListener,
+public class KomaPresenter extends GestureDetector.SimpleOnGestureListener implements KomaContract.Presenter, AudioManager.OnAudioFocusChangeListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnVideoSizeChangedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener,
-        MediaPlayer.OnBufferingUpdateListener, SurfaceHolder.Callback {
-    private static final String TAG = KomaVideoControllerPresenter.class.getSimpleName();
+        MediaPlayer.OnBufferingUpdateListener {
+    private static final String TAG = KomaPresenter.class.getSimpleName();
 
     private static final float ADJUST_LOWER = .2f;
     private static final float ADJUST_RAISE = 1.0f;
-
     // all possible internal states
     private static final int STATE_ERROR = -1;
     private static final int STATE_IDLE = 0;
@@ -45,50 +44,51 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
 
     private int mSeekWhenPrepared;  // recording the seek position while preparing
     private int mCurrentBufferPercentage;
-
     private int mAudioSession;
-    private SurfaceHolder mSurfaceHolder = null;
-    private AudioManager mAudiomanager;
+
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private MediaPlayer.OnErrorListener mOnErrorListener;
     private MediaPlayer.OnInfoListener mOnInfoListener;
-    @NonNull
-    private KomaVideoControllerContract.View mView;
 
     private MediaPlayer mMediaPlayer = null;
+
+    @NonNull
+    private KomaContract.View mView;
 
     private Uri mUri;
 
     private boolean mPausedByTransientLossOfFocus = false; // recording audio focus loss
 
-    public KomaVideoControllerPresenter(KomaVideoControllerContract.View view) {
+
+    public KomaPresenter(KomaContract.View view) {
         mView = view;
         mView.setPresenter(this);
 
-        init();
-    }
 
-    private void init() {
-        mAudiomanager = (AudioManager) mView.getContext().getSystemService(Context.AUDIO_SERVICE);
+
+        mCurrentState = STATE_IDLE;
+        mTargetState = STATE_IDLE;
     }
 
     @Override
     public void subscribe() {
         KomaLogUtils.i(TAG, "subscribe");
-
-        mView.addCallback(this);
     }
 
     @Override
     public void unSubscribe() {
         KomaLogUtils.i(TAG, "unSubscribe");
-
     }
 
     @Override
-    public SimpleOnGestureListener getGestureListener() {
-        return this;
+    public boolean isTargetPlaying() {
+        return mTargetState == STATE_PLAYING;
+    }
+
+    @Override
+    public int getSeekWhenPrepared() {
+        return this.mSeekWhenPrepared;
     }
 
     @Override
@@ -104,11 +104,6 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
     }
 
     @Override
-    public SurfaceHolder.Callback getCallback() {
-        return this;
-    }
-
-    @Override
     public void setVideoPath(String path) {
         setVideoUri(Uri.parse(path));
     }
@@ -121,32 +116,13 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
 
         mSeekWhenPrepared = 0;
 
-        // openVideo();
+        openVideo();
     }
 
     @Override
-    public void setOnPreparedListener(MediaPlayer.OnPreparedListener l) {
-        this.mOnPreparedListener = l;
-    }
-
-    @Override
-    public void setOnCompletionListener(MediaPlayer.OnCompletionListener l) {
-        this.mOnCompletionListener = l;
-    }
-
-    @Override
-    public void setOnErrorListener(MediaPlayer.OnErrorListener l) {
-        this.mOnErrorListener = l;
-    }
-
-    @Override
-    public void setOnInfoListener(MediaPlayer.OnInfoListener l) {
-        this.mOnInfoListener = l;
-    }
-
-    private void openVideo() {
+    public void openVideo() {
         KomaLogUtils.i(TAG, "openVideo");
-        if (mUri == null || mSurfaceHolder == null) {
+        if (mUri == null || mView == null || mView.getSurfaceHolder() == null) {
             // not ready for playback just yet, will try again later
             return;
         }
@@ -170,7 +146,7 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
             mMediaPlayer.setOnBufferingUpdateListener(this);
             mCurrentBufferPercentage = 0;
             mMediaPlayer.setDataSource(mView.getContext(), mUri);
-            mMediaPlayer.setDisplay(mSurfaceHolder);
+            mMediaPlayer.setDisplay(mView.getSurfaceHolder());
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setScreenOnWhilePlaying(true);
             mMediaPlayer.prepareAsync();
@@ -195,16 +171,34 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
         }
     }
 
-    /*
-     * release the media player in any state
-     */
-    private void release(boolean cleartargetstate) {
+    @Override
+    public void setOnPreparedListener(MediaPlayer.OnPreparedListener l) {
+        this.mOnPreparedListener = l;
+    }
+
+    @Override
+    public void setOnCompletionListener(MediaPlayer.OnCompletionListener l) {
+        this.mOnCompletionListener = l;
+    }
+
+    @Override
+    public void setOnErrorListener(MediaPlayer.OnErrorListener l) {
+        this.mOnErrorListener = l;
+    }
+
+    @Override
+    public void setOnInfoListener(MediaPlayer.OnInfoListener l) {
+        this.mOnInfoListener = l;
+    }
+
+    @Override
+    public void release(boolean clearTargetState) {
         if (mMediaPlayer != null) {
             mMediaPlayer.reset();
             mMediaPlayer.release();
             mMediaPlayer = null;
             mCurrentState = STATE_IDLE;
-            if (cleartargetstate) {
+            if (clearTargetState) {
                 mTargetState = STATE_IDLE;
             }
             abandonAudioFocus();
@@ -231,10 +225,6 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
                 mCurrentState = STATE_PLAYING;
             }
             //// TODO: 6/12/17 update mediacontroller
-
-            if (mView != null) {
-                mView.updatePausePlay();
-            }
         }
         mTargetState = STATE_PLAYING;
     }
@@ -246,9 +236,6 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
                 mMediaPlayer.pause();
                 mCurrentState = STATE_PAUSED;
                 //// TODO: 6/12/17 update mediacontroller
-                if (mView != null) {
-                    mView.updatePausePlay();
-                }
             }
         }
         mTargetState = STATE_PAUSED;
@@ -312,6 +299,70 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
     }
 
     @Override
+    public void onPrepared(MediaPlayer mp) {
+        KomaLogUtils.i(TAG, "onPrepared");
+
+        mCurrentState = STATE_PREPARED;
+
+        if (mOnPreparedListener != null) {
+            mOnPreparedListener.onPrepared(mMediaPlayer);
+        }
+        //// TODO: 6/12/17 enable mediacontroller
+
+        int seekToPosition = mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call
+        if (seekToPosition != 0) {
+            seekTo(seekToPosition);
+        }
+
+        if (mView != null) {
+            mView.onPrepared(mp);
+        }
+    }
+
+    @Override
+    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+        KomaLogUtils.i(TAG, "onVideoSizeChanged");
+
+        if (mView != null) {
+            mView.onVideoSizeChanged(mp, width, height);
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        KomaLogUtils.i(TAG, "onCompletion");
+
+        if (mOnCompletionListener != null) {
+            mOnCompletionListener.onCompletion(mp);
+        }
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        KomaLogUtils.e(TAG, "Error: " + what + "," + extra);
+        if (mOnErrorListener != null) {
+            mOnErrorListener.onError(mp, what, extra);
+            return true;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        KomaLogUtils.i(TAG, "onInfo " + what + "," + extra);
+
+        if (mOnInfoListener != null) {
+            mOnInfoListener.onInfo(mp, what, extra);
+        }
+        return true;
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        KomaLogUtils.i(TAG, "onBufferingUpdate percent : " + percent);
+    }
+
+    @Override
     public void onAudioFocusChange(int focusChange) {
         KomaLogUtils.i(TAG, "onAudioFocusChange : " + focusChange);
         switch (focusChange) {
@@ -336,105 +387,5 @@ public class KomaVideoControllerPresenter extends SimpleOnGestureListener implem
                 break;
             default:
         }
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        KomaLogUtils.i(TAG, "onPrepared");
-
-        mCurrentState = STATE_PREPARED;
-
-        start();
-
-        if (mOnPreparedListener != null) {
-            mOnPreparedListener.onPrepared(mMediaPlayer);
-        }
-        //// TODO: 6/12/17 enable mediacontroller
-    }
-
-    @Override
-    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-        KomaLogUtils.i(TAG, "onVideoSizeChanged");
-        int videoWidth = mp.getVideoWidth();
-        int videoHeight = mp.getVideoHeight();
-        if (videoWidth != 0 && videoHeight != 0) {
-            mSurfaceHolder.setFixedSize(videoWidth, videoHeight);
-            mView.setVideoSize(videoWidth, videoHeight);
-        }
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        KomaLogUtils.i(TAG, "onCompletion");
-        mCurrentState = STATE_PLAYBACK_COMPLETED;
-        mTargetState = STATE_PLAYBACK_COMPLETED;
-
-        if (mOnCompletionListener != null) {
-            mOnCompletionListener.onCompletion(mp);
-        }
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        KomaLogUtils.e(TAG, "Error: " + what + "," + extra);
-        mCurrentState = STATE_ERROR;
-        mTargetState = STATE_ERROR;
-        /* If an error handler has been supplied, use it and finish. */
-        if (mOnErrorListener != null) {
-            if (mOnErrorListener.onError(mMediaPlayer, what, extra)) {
-                return true;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onInfo(MediaPlayer mp, int what, int extra) {
-        KomaLogUtils.i(TAG, "onInfo " + what + "," + extra);
-
-        if (mOnInfoListener != null) {
-            mOnInfoListener.onInfo(mp, what, extra);
-        }
-        return true;
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        KomaLogUtils.i(TAG, "onBufferingUpdate percent : " + percent);
-
-        mCurrentBufferPercentage = percent;
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        KomaLogUtils.i(TAG, "surfaceCreated");
-
-        mSurfaceHolder = holder;
-
-        openVideo();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        KomaLogUtils.i(TAG, "surfaceChanged width : " + width + "," + "height : " + height);
-       /* mSurfaceWidth = width;
-        mSurfaceHeight = height;
-        boolean isValidState = (mTargetState == STATE_PLAYING);
-        boolean hasValidSize = (mVideoWidth == width && mVideoHeight == height);
-        if (mMediaPlayer != null && isValidState && hasValidSize) {
-            if (mSeekWhenPrepared != 0) {
-                seekTo(mSeekWhenPrepared);
-            }
-            start();
-        }*/
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        KomaLogUtils.i(TAG, "surfaceDestroyed");
-
-        mSurfaceHolder = null;
-
-        release(true);
     }
 }

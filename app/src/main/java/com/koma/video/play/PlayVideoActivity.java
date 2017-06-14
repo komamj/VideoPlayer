@@ -183,6 +183,12 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
         KomaLogUtils.i(TAG, "onPause");
 
         savePlayTime();
+
+        if (mVideoView != null) {
+            mVideoView.stopPlayback();
+        }
+
+        unregisterReceiver(mHeadsetReceiver);
     }
 
     private void savePlayTime() {
@@ -196,11 +202,11 @@ public class PlayVideoActivity extends BaseActivity implements View.OnClickListe
 
         KomaLogUtils.i(TAG, "onStop");
 
-        if (mVideoView != null) {
+        /*if (mVideoView != null) {
             mVideoView.stopPlayback();
         }
 
-        unregisterReceiver(mHeadsetReceiver);
+        unregisterReceiver(mHeadsetReceiver);*/
     }
 
 
